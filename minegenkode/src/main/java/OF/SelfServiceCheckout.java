@@ -1,5 +1,6 @@
 package OF;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,15 +10,42 @@ public class SelfServiceCheckout {
     private String phoneNumber;
     static List<String> days = Arrays.asList("mon", "tue", "wed", "thu", "fri", "sat", "sun");
 
+    private boolean adminMode;
+    private String password;
+    private List<Item> shoppingCart;
+
+
     private void validateDay(String day) {
         if (!days.contains(day)) {
             throw new IllegalArgumentException("Invalid weekday");
         }
     }
 
-    public SelfServiceCheckout(String day) {
+
+    private boolean validatePassword(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[a-zA-Z]).{6,10}$");
+    }
+
+    public void activateAdminMode(String password) {
+        if(this.adminMode) {
+            throw IllegalStateException("Du er allerede logget inn som admin!");
+        }
+        if(this.password.equals(password)) {
+            this.adminMode = true;
+        } else {
+            throw new IllegalArgumentException("Feil passord!");
+        }
+    }
+
+
+
+    public SelfServiceCheckout(String day, String password) {
         validateDay(day);
+        validatePassword(password);
         this.day = day;
+        this.adminMode = false;
+        this.password = password;
+        this.shoppingCart = new ArrayList<>();
     }
 
     public void registerPhoneNumber(String phoneNumber) {
