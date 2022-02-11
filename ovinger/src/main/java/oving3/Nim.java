@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class Nim {
     
     private List<Integer> hauger = new ArrayList();
@@ -22,7 +21,6 @@ public class Nim {
             throw new IllegalStateException("Spillet er over, du kan ikke fjerne brikker nå.");
         }
     }
-
 
     public boolean isValidMove(int number, int targetPile) {
         if (!(isGameOver())) {
