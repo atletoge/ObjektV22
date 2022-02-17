@@ -5,7 +5,7 @@ import json
 
 # get the IP address of the chatserver (www.ttm4200.com) 
 # using your DNS server and socket methods
-SERVER_IP = "10.20.30.3"
+SERVER_IP = socket.gethostbyname("ttm4200.com")
 
 # Get the IP address of the client using socket methods
 CLIENT_IP =  socket.gethostbyname(socket.gethostname())
@@ -138,4 +138,4 @@ def send():
 if __name__ == "__main__":
     connection_threads = Thread(target=connect_and_listen)
     connection_threads.start()  # Starts the infinite loop.
-    connection_threads.join(
+    connection_threads.join()

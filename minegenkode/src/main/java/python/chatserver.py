@@ -1,3 +1,6 @@
+#%%writefile chatserver.py
+
+
 # Import necessary modules
 import socket
 from threading import Thread
@@ -5,6 +8,8 @@ import json
 import sys
 import hashlib
 
+
+password_dic = {}
 # Get the IP address of the server using socket 
 # Don't write the IP address directly.
 SERVER_IP  = socket.gethostbyname(socket.gethostname())
@@ -39,7 +44,31 @@ def accept_incoming_connections():
             #recieve the first message from the client_socket
             name = client_socket.recv(RECV_BUFFER)
             name= name.decode("utf-8")
-            #Storing the client name and its socket 
+            if name in password_dic:
+                send_pass = "Skriv inn passord"
+                send_pass = send_pass.encode()
+                client_socket.send(send_pass)
+                passord = client_socket.recv(RECV_BUFFER)
+                #passord = passord.decode("utf-8")
+                hash1 = hashlib.md5(passord).hexdigest()
+                print(hash1)
+                print(password_dic[name])
+                if password_dic[name] == hash1:
+                    client_socket.send("Du er naa logget inn!")
+                else:
+                    client_socket.send("Feil brukernavn og/eller passord. ")
+                    client_socket.close()
+                    
+            else:
+                client_socket.send("Enter your password".encode())
+                passord1 = client_socket.recv(RECV_BUFFER)
+                hash2 = hashlib.md5(passord1).hexdigest()
+                password_dic[name] = hash2
+            
+                    
+
+            #Storing the client name and its socket
+            #print(password_dic)
             SOCKETS[client_socket] = name
             ACTIVE_USERS[name] = client_address[0]
             print(f"{name} with IP address:{client_address[0]}, has connected\n")
@@ -56,7 +85,8 @@ def accept_incoming_connections():
 
 
 #Thread for handling connection to every client
-def handle_client(client_socket):  
+def handle_client(client_socket):
+
     while True:
         try:
             # receive a message from the client_socket
