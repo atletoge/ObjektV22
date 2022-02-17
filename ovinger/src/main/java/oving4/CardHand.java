@@ -10,7 +10,7 @@ public class CardHand  extends CardDeck {
         
     }
 
-    List<Card> kortstokk = new ArrayList();
+    //List<Card> cardList = new ArrayList();
 
     public CardHand(int n) {
         super(n);
@@ -18,16 +18,22 @@ public class CardHand  extends CardDeck {
     }
     
     public void addCard(Card card) {
-        this.kortstokk.add(card);
+        kortstokk.add(card);
     }
 
     public Card play(int n) {
-        if (n < (this.kortstokk.size()-1)) {
-            Card kort = this.kortstokk.get(n);
-            this.kortstokk.remove(n);
+        if (n < (kortstokk.size())) {
+            Card kort = kortstokk.get(n);
+            kortstokk.remove(n);
             return kort;
         }
         throw new IllegalArgumentException("Kortet på plassnr "+n+" eksisterer ikke");
     }
 
+    
+    public static void main(String[] args) {
+        CardDeck cardDeck = new CardDeck(3);
+        CardHand cardHand = new CardHand();
+        cardHand.deal(cardHand, 3);
+    }
 }

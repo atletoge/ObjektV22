@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CardDeck {
     
-    private List<Card> kortstokk = new ArrayList();
+    public List<Card> kortstokk = new ArrayList();
 
 
     public CardDeck(){
@@ -32,7 +32,7 @@ public class CardDeck {
     }
 
     public int getCardCount() {
-        return kortstokk.size();
+        return this.kortstokk.size();
     }
 
     public Card getCard(int n) {
@@ -60,13 +60,10 @@ public class CardDeck {
     }
 
     public void deal(CardHand cardHand, int n) {
-        if(n< this.kortstokk.size()) {
-            for (int i = 1; i < n+1; i++) {
-                cardHand.kortstokk.add(kortstokk.get(kortstokk.size()-i));
-                kortstokk.remove(kortstokk.size()-i);
-            }
+        for (int i = 0; i < n; i++) {
+            cardHand.addCard(this.kortstokk.get(this.kortstokk.size()-1));
+            this.kortstokk.remove(this.kortstokk.size()-1);
         }
-        else throw new IllegalArgumentException("Ikke nok kort i kortstokken. ");
     }
 
 
