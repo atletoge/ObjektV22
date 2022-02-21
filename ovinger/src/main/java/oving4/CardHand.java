@@ -7,7 +7,7 @@ public class CardHand  extends CardDeck {
 
 
     public CardHand() {
-        
+        super(0);
     }
 
     //List<Card> cardList = new ArrayList();

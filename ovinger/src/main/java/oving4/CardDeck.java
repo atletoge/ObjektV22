@@ -8,12 +8,9 @@ import java.util.List;
 
 public class CardDeck {
     
-    public List<Card> kortstokk = new ArrayList();
+    protected List<Card> kortstokk = new ArrayList();
 
 
-    public CardDeck(){
-
-    }
 
     public CardDeck(int n) {
         List<Character> gyldige = Arrays.asList('S','H','D','C');
