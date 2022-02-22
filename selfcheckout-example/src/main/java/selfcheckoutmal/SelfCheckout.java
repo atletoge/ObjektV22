@@ -26,6 +26,10 @@ public class SelfCheckout {
         this.shoppingCart = new ArrayList<>();
     }
 
+    public List<Item> getShoppingCart() {
+        return new ArrayList<>(this.shoppingCart);
+    }
+
     // Del 4 a)
     public void removeFromCart(int index) {
         if (!this.adminMode) {
@@ -44,6 +48,13 @@ public class SelfCheckout {
         } else {
             throw new IllegalArgumentException("Wrong password, permission denied");
         }
+    }
+
+    public void deactivateAdminMode() {
+        if (!this.adminMode) {
+            throw new IllegalStateException("Admin mode is already inactive!");
+        }
+        this.adminMode = false;
     }
 
     public void registerPhoneNumber(String phoneNumer) {

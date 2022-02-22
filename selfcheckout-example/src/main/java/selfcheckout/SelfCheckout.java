@@ -15,16 +15,16 @@ public class SelfCheckout {
     private String password;
     private String phoneNumber;
     private List<Item> shoppingCart;
-    private Collection<Discount> discounts;
+    private Collection<Campaign> campaigns;
 
-    public SelfCheckout(String day, String password, List<Discount> discounts) {
+    public SelfCheckout(String day, String password, List<Campaign> campaigns) {
         validateDay(day);
         validatePassword(password);
         this.day = day;
         this.password = password;
         this.adminMode = false;
         this.shoppingCart = new ArrayList<>();
-        this.discounts = discounts;
+        this.campaigns = campaigns;
     }
 
     // Del 4 a)
@@ -85,11 +85,11 @@ public class SelfCheckout {
     public List<String> getCartDisplayList() {
         List<String> displayList = new ArrayList<>();
         for (Item item : shoppingCart) {
-            Discount discount = getDiscountInfoForItem(item);
-            if (discount == null) {
+            Campaign campaign = getCampaignForItem(item);
+            if (campaign == null) {
                 displayList.add(item.getName() + "\n" + String.format("%.2f", this.getPriceForItem(item)) + " kr");
             } else {
-                displayList.add(item.getName() + "\n" + discount + "\n"
+                displayList.add(item.getName() + "\n" + campaign + "\n"
                         + String.format("%.2f", this.getPriceForItem(item)) + " kr");
             }
         }
@@ -107,26 +107,26 @@ public class SelfCheckout {
         }
     }
 
-    private Discount getDiscountInfoForItem(Item item) {
-        for (Discount discount : discounts) {
-            if (discount.isMemberDiscount() && !isMember()) {
+    private Campaign getCampaignForItem(Item item) {
+        for (Campaign campaign : campaigns) {
+            if (campaign.isMembersOnly() && !isMember()) {
                 continue;
             }
-            if (!discount.getActiveWeekdays().contains(this.day)) {
+            if (!campaign.getActiveWeekdays().contains(this.day)) {
                 continue;
             }
-            if (discount.getCategory() != null && !discount.getCategory().equals(item.getCategory())) {
+            if (campaign.getCategory() != null && !campaign.getCategory().equals(item.getCategory())) {
                 continue;
             }
-            return discount;
+            return campaign;
         }
         return null;
     }
 
     private double getDiscountForItem(Item item) {
-        Discount discount = getDiscountInfoForItem(item);
-        if (discount != null) {
-            return discount.getDiscountPercentage();
+        Campaign campaign = getCampaignForItem(item);
+        if (campaign != null) {
+            return campaign.getDiscount();
         } else {
             return 0.0;
         }

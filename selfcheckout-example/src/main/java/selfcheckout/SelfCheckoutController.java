@@ -36,11 +36,11 @@ public class SelfCheckoutController {
         initializeSelectableItemsList();
         // String weekday = LocalDate.now().getDayOfWeek().name().substring(0, 3);
         String weekday = "mon";
-        List<Discount> discounts = List.of(
-                new Discount("Helgerabatt på taco", 0.3, "taco", true, List.of("fri", "sat")),
-                new Discount("Mandagsmat til under 200-lappen", 0.25, "dinner", false, List.of("mon")),
-                new Discount("Tilbuds-Torsdag", 0.1, null, true, List.of("thu")),
-                new Discount("Medlemsrabatt", 0.02, null, true,
+        List<Campaign> discounts = List.of(
+                new Campaign("Helgerabatt på taco", 0.3, "taco", true, List.of("fri", "sat")),
+                new Campaign("Mandagsmat til under 200-lappen", 0.25, "dinner", false, List.of("mon")),
+                new Campaign("Tilbuds-Torsdag", 0.1, null, true, List.of("thu")),
+                new Campaign("Medlemsrabatt", 0.02, null, true,
                         List.of("mon", "tue", "wed", "thu", "fri", "sat", "sun")));
         selfCheckout = new SelfCheckout(weekday.toLowerCase(), "test123", discounts);
         updateCartDisplay();
@@ -115,7 +115,7 @@ public class SelfCheckoutController {
     }
 
     private Button createItemButton(Item item) {
-        Button button = new Button(item.getName());
+        Button button = new Button(item.toString());
         button.wrapTextProperty().setValue(true);
         button.setStyle("-fx-text-alignment: center;");
         button.setCursor(Cursor.HAND);
@@ -139,7 +139,7 @@ public class SelfCheckoutController {
                         new Item("Brød", 18.90, "breakfast"),
                         new Item("Yoghurt", 15.50, "diary"),
                         new Item("Fusilli", 25.0, "dinner"),
-                        new Item("Dolmio Classico pastasaus", 40.0, "dinner"),
+                        new Item("Dolmio Classico", 40.0, "dinner"),
                         new Item("Laksefilet, 500g", 107.0, "dinner"),
                         new Item("Pose", 1.50, "general")));
     }

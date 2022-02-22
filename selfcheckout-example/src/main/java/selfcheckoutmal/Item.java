@@ -27,4 +27,8 @@ public class Item {
         return category;
     }
 
+    @Override
+    public String toString() {
+        return name + "\n" + price + " kr";
+    }
 }

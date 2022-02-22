@@ -3,20 +3,20 @@ package selfcheckout;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Discount {
+public class Campaign {
 
     private String name;
-    private double discountPercentage = 0.0;
+    private double discount = 0.0;
     private String category;
-    private boolean memberDiscount;
+    private boolean membersOnly;
     private List<String> activeWeekdays;
 
-    public Discount(String name, double discountPercentage, String category, boolean memberDiscount,
+    public Campaign(String name, double discount, String category, boolean membersOnly,
             List<String> activeWeekdays) {
         this.name = name;
-        this.discountPercentage = discountPercentage;
+        this.discount = discount;
         this.category = category;
-        this.memberDiscount = memberDiscount;
+        this.membersOnly = membersOnly;
         this.activeWeekdays = new ArrayList<>(activeWeekdays);
     }
 
@@ -24,16 +24,16 @@ public class Discount {
         return name;
     }
 
-    public double getDiscountPercentage() {
-        return discountPercentage;
+    public double getDiscount() {
+        return discount;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public boolean isMemberDiscount() {
-        return memberDiscount;
+    public boolean isMembersOnly() {
+        return membersOnly;
     }
 
     public List<String> getActiveWeekdays() {
@@ -42,7 +42,7 @@ public class Discount {
 
     @Override
     public String toString() {
-        return name + " -" + Math.round(discountPercentage * 100) + "%";
+        return name + " -" + Math.round(discount * 100) + "%";
     }
 
 }
