@@ -29,7 +29,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return "1x " + name + "\t\t\t" + price + " kr";
+        return name + "\n" + price + " kr";
     }
 
 }

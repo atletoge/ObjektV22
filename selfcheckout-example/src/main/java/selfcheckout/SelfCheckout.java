@@ -3,6 +3,7 @@ package selfcheckout;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class SelfCheckout {
 
@@ -14,20 +15,22 @@ public class SelfCheckout {
     private String password;
     private String phoneNumber;
     private List<Item> shoppingCart;
+    private Collection<Discount> discounts;
 
-    public SelfCheckout(String day, String password) {
+    public SelfCheckout(String day, String password, List<Discount> discounts) {
         validateDay(day);
         validatePassword(password);
         this.day = day;
         this.password = password;
         this.adminMode = false;
         this.shoppingCart = new ArrayList<>();
+        this.discounts = discounts;
     }
 
     // Del 4 a)
     public void removeFromCart(int index) {
         if (!this.adminMode) {
-            throw new IllegalStateException("Illegal operation");
+            throw new IllegalStateException("Illegal operation, not logged in as admin");
         }
         this.shoppingCart.remove(index);
     }
@@ -42,6 +45,13 @@ public class SelfCheckout {
         } else {
             throw new IllegalArgumentException("Wrong password, permission denied");
         }
+    }
+
+    public void deactivateAdminMode() {
+        if (!this.adminMode) {
+            throw new IllegalStateException("Admin mode is already inactive!");
+        }
+        this.adminMode = false;
     }
 
     public void registerPhoneNumber(String phoneNumer) {
@@ -72,6 +82,20 @@ public class SelfCheckout {
         }
     }
 
+    public List<String> getCartDisplayList() {
+        List<String> displayList = new ArrayList<>();
+        for (Item item : shoppingCart) {
+            Discount discount = getDiscountInfoForItem(item);
+            if (discount == null) {
+                displayList.add(item.getName() + "\n" + String.format("%.2f", this.getPriceForItem(item)) + " kr");
+            } else {
+                displayList.add(item.getName() + "\n" + discount + "\n"
+                        + String.format("%.2f", this.getPriceForItem(item)) + " kr");
+            }
+        }
+        return displayList;
+    }
+
     // Metodene nedenfor er alle "private" da de kun er hjelpe/valideringsmetoder
     // Dette betyr at vi ikke har bruk for de utenfor klassen og vi gjør de derfor
     // heller ikke synlige utenfor.
@@ -83,18 +107,29 @@ public class SelfCheckout {
         }
     }
 
-    // Del 5
-    private double getDiscountForItem(Item item) {
-        // Funksjonaliteten her skal vi utvide senere...
-        if (isMember() && item.getCategory().equals("taco")) {
-            // Her ser vi spesielt viktigheten av å bruke .equals()
-            // Her ville man fått feil hvis man brukte == med måten den
-            // initialiseres i controlleren!
-            if (day.equals("fri") || day.equals("sat")) {
-                return 0.3;
+    private Discount getDiscountInfoForItem(Item item) {
+        for (Discount discount : discounts) {
+            if (discount.isMemberDiscount() && !isMember()) {
+                continue;
             }
+            if (!discount.getActiveWeekdays().contains(this.day)) {
+                continue;
+            }
+            if (discount.getCategory() != null && !discount.getCategory().equals(item.getCategory())) {
+                continue;
+            }
+            return discount;
         }
-        return 0.0;
+        return null;
+    }
+
+    private double getDiscountForItem(Item item) {
+        Discount discount = getDiscountInfoForItem(item);
+        if (discount != null) {
+            return discount.getDiscountPercentage();
+        } else {
+            return 0.0;
+        }
     }
 
     private double getPriceForItem(Item item) {
@@ -248,33 +283,6 @@ public class SelfCheckout {
                 this.getTotalMVAForCart(),
                 this.getTotalPriceForCart());
         return text;
-    }
-
-    // main-metode for å teste koden
-    public static void main(String[] args) {
-
-        SelfCheckout checkout = new SelfCheckout("fri", "passord123");
-
-        Item tomato = new Item("Tomat", 5, "fruit");
-        Item cheese = new Item("Norvegia", 90, "diary");
-        Item cheese2 = new Item("Norvegia", 90, "diary");
-        Item tortillas = new Item("Lefser", 15, "taco");
-        Item groundMeat = new Item("Kjøttdeig", 29.99, "taco");
-
-        checkout.scanItem(tomato);
-        checkout.scanItem(cheese);
-        checkout.scanItem(tortillas);
-        checkout.scanItem(groundMeat);
-        checkout.scanItem(cheese2);
-
-        System.out.println(checkout);
-
-        checkout.registerPhoneNumber("004742345678");
-        checkout.activateAdminMode("passord123");
-        checkout.removeFromCart(0);
-
-        System.out.println(checkout);
-
     }
 
 }

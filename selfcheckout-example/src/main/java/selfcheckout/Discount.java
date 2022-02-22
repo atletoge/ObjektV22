@@ -7,28 +7,42 @@ public class Discount {
 
     private String name;
     private double discountPercentage = 0.0;
-    private List<Item> discountedItems;
+    private String category;
+    private boolean memberDiscount;
+    private List<String> activeWeekdays;
 
-    public Discount(String name, double discountPercentage, List<Item> discountedItems) {
+    public Discount(String name, double discountPercentage, String category, boolean memberDiscount,
+            List<String> activeWeekdays) {
         this.name = name;
         this.discountPercentage = discountPercentage;
-        this.discountedItems = new ArrayList<>(discountedItems);
+        this.category = category;
+        this.memberDiscount = memberDiscount;
+        this.activeWeekdays = new ArrayList<>(activeWeekdays);
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Item> getDiscountedItems() {
-        return new ArrayList<>(discountedItems);
-    }
-
     public double getDiscountPercentage() {
         return discountPercentage;
     }
 
-    public void setDiscountPercentage(double discountPercentage) {
-        this.discountPercentage = discountPercentage;
+    public String getCategory() {
+        return category;
+    }
+
+    public boolean isMemberDiscount() {
+        return memberDiscount;
+    }
+
+    public List<String> getActiveWeekdays() {
+        return new ArrayList<>(activeWeekdays);
+    }
+
+    @Override
+    public String toString() {
+        return name + " -" + Math.round(discountPercentage * 100) + "%";
     }
 
 }
