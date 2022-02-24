@@ -3,7 +3,6 @@ package selfcheckout;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -34,8 +33,17 @@ public class SelfCheckoutController {
     @FXML
     public void initialize() {
         initializeSelectableItemsList();
-        // String weekday = LocalDate.now().getDayOfWeek().name().substring(0, 3);
-        String weekday = "mon";
+        initializeSelfCheckout();
+        updateCartDisplay();
+
+        for (int i = 0; i < selectableItemsList.size(); i++) {
+            Item selectableItem = selectableItemsList.get(i);
+            itemGrid.add(createItemButton(selectableItem), i % 4, i / 4);
+        }
+    }
+
+    private void initializeSelfCheckout() {
+        String weekday = LocalDate.now().getDayOfWeek().name().substring(0, 3);
         List<Campaign> discounts = List.of(
                 new Campaign("Helgerabatt på taco", 0.3, "taco", true, List.of("fri", "sat")),
                 new Campaign("Mandagsmat til under 200-lappen", 0.25, "dinner", false, List.of("mon")),
@@ -43,12 +51,6 @@ public class SelfCheckoutController {
                 new Campaign("Medlemsrabatt", 0.02, null, true,
                         List.of("mon", "tue", "wed", "thu", "fri", "sat", "sun")));
         selfCheckout = new SelfCheckout(weekday.toLowerCase(), "test123", discounts);
-        updateCartDisplay();
-
-        for (int i = 0; i < selectableItemsList.size(); i++) {
-            Item selectableItem = selectableItemsList.get(i);
-            itemGrid.add(createItemButton(selectableItem), i % 4, i / 4);
-        }
     }
 
     @FXML
@@ -99,6 +101,14 @@ public class SelfCheckoutController {
         updateCartDisplay();
         phoneNumber.disableProperty().set(true);
         login.disableProperty().set(true);
+    }
+
+    @FXML
+    public void handleCheckout() {
+        System.out.println(selfCheckout);
+        initializeSelfCheckout();
+        phoneNumber.disableProperty().set(false);
+        login.disableProperty().set(false);
     }
 
     private void updateCartDisplay() {

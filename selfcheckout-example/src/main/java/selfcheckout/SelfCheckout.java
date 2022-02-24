@@ -271,15 +271,18 @@ public class SelfCheckout {
     public String getCheckoutText() {
         String text = "";
         if (isMember()) {
-            text = "Medlems-ID: " + phoneNumber + "\n";
+            text = String.format(
+                    """
+                            ---------------------------------------
+                            Medlems-ID: %s
+                            """, this.phoneNumber);
         }
         text += String.format(
                 """
                         ---------------------------------------
                         Total MVA\t\t\t\t\t\t%.2f
                         Total\t\t\t\t\t\t\t%.2f
-                        ---------------------------------------
-                        """,
+                        ---------------------------------------""",
                 this.getTotalMVAForCart(),
                 this.getTotalPriceForCart());
         return text;
