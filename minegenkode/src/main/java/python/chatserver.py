@@ -7,6 +7,7 @@ from threading import Thread
 import json
 import sys
 import hashlib
+import time
 
 
 password_dic = {}
@@ -54,13 +55,13 @@ def accept_incoming_connections():
                 print(hash1)
                 print(password_dic[name])
                 if password_dic[name] == hash1:
-                    client_socket.send("Du er naa logget inn!")
+                    client_socket.send("Du er naa logget inn!".encode("utf8"))
                 else:
-                    client_socket.send("Feil brukernavn og/eller passord. ")
+                    client_socket.send("Feil brukernavn og/eller passord. ".encode("utf8"))
                     client_socket.close()
                     
             else:
-                client_socket.send("Enter your password".encode())
+                client_socket.send("Enter your password".encode("utf8"))
                 passord1 = client_socket.recv(RECV_BUFFER)
                 hash2 = hashlib.md5(passord1).hexdigest()
                 password_dic[name] = hash2
@@ -73,6 +74,7 @@ def accept_incoming_connections():
             ACTIVE_USERS[name] = client_address[0]
             print(f"{name} with IP address:{client_address[0]}, has connected\n")
             # Updating all clients of the current active users
+            time.sleep(0.5)
             broadcast_active_users()
 
         except:
@@ -90,7 +92,7 @@ def handle_client(client_socket):
     while True:
         try:
             # receive a message from the client_socket
-            msg = input("Hva vil du skrive? ")
+            msg = client_socket.recv(RECV_BUFFER)
             msg = msg.decode("utf-8")
 
         except:
@@ -113,7 +115,7 @@ def handle_client(client_socket):
             msg = f"{SOCKETS[client_socket]}: {msg} "
 
             # Send the received msg to every client, except this client 
-            broadcast_msg(localhost, msg)
+            broadcast_msg(client_socket, msg)
 
 
 # Function to send a message to every client, except the sending client
