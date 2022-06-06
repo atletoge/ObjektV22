@@ -1,0 +1,29 @@
+test class interfaces.Person1 implements Named {
+	new(String givenName, String familyName)
+}
+interface Named {
+	String getGivenName()
+	void setGivenName(String name)
+	String getFamilyName()
+	void setFamilyName(String name)
+	String getFullName()
+	void setFullName(String name)
+}
+
+instance String h = "Hallvard", String t = "Trætteberg", String j = "Jens" 
+instance Person1 person1 = new Person1(h, t)
+
+sequence Person1 {
+	-->
+	state person1 {
+		givenName == h
+		familyName == t
+		fullName == h + " " + t
+	}
+	-- person1.givenName = j -->
+	state person1 {
+		givenName == j
+		familyName == t
+		fullName == j + " " + t
+	}
+}

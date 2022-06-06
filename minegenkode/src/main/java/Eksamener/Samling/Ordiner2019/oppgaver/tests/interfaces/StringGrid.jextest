@@ -1,0 +1,63 @@
+test interface interfaces.StringGrid {
+	int getRowCount()
+	int getColumnCount()
+	String getElement(int row, int column)
+	void setElement(int row, int column, String element)	
+}
+class interfaces.StringGridImpl implements StringGrid, Iterable<String> {
+	new(int rows, int columnCount)
+}
+class StringGridIterator implements Iterator<String> {
+	new(StringGrid grid, boolean rowMajor)
+}
+
+import java.util.Iterator
+
+instance StringGrid grid = new StringGridImpl(2, 3)
+
+sequence size {
+	-->
+	state grid {
+		rowCount == 2
+		columnCount == 3
+	}
+}
+
+sequence grid {
+	--
+	grid.setElement(0, 0, "0, 0"), grid.setElement(0, 1, "0, 1"), grid.setElement(0, 2, "0, 2"),
+	grid.setElement(1, 0, "1, 0"), grid.setElement(1, 1, "1, 1"), grid.setElement(1, 2, "1, 2")
+	-->
+	state grid {
+		getElement(0, 0) == "0, 0" getElement(0, 1) == "0, 1" getElement(0, 2) == "0, 2"
+		getElement(1, 0) == "1, 0" getElement(1, 1) == "1, 1" getElement(1, 2) == "1, 2"
+	}
+}
+
+sequence gridIteratorRowMajor {
+	instance StringGridIterator gridIterator = new StringGridIterator(grid, true)
+	--
+	grid.setElement(0, 0, "0, 0"), grid.setElement(0, 1, "0, 1"), grid.setElement(0, 2, "0, 2"),
+	grid.setElement(1, 0, "1, 0"), grid.setElement(1, 1, "1, 1"), grid.setElement(1, 2, "1, 2")
+	-->									state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 0" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 1" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 2" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 0" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 1" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 2" -->	state gridIterator { hasNext == false }
+}
+
+sequence gridIteratorColumnMajor {
+	instance StringGridIterator gridIterator = new StringGridIterator(grid, false)
+	--
+	grid.setElement(0, 0, "0, 0"), grid.setElement(0, 1, "0, 1"), grid.setElement(0, 2, "0, 2"),
+	grid.setElement(1, 0, "1, 0"), grid.setElement(1, 1, "1, 1"), grid.setElement(1, 2, "1, 2")
+	-->									state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 0" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 0" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 1" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 1" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "0, 2" --> 	state gridIterator { hasNext == true }
+	-- gridIterator.next == "1, 2" -->	state gridIterator { hasNext == false }
+}

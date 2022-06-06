@@ -1,0 +1,24 @@
+test class interfaces.NamedComparator implements Comparator<Named> {
+	
+}
+interface Named {
+}
+class Person1 implements Named {
+	new(String givenName, String familyName)
+}
+class Person2 implements Named {
+	new(String fullName)
+}
+import java.util.Comparator
+
+sequence namedComparator {
+	instance Person1 ht = new Person1("Hallvard", "Trætteberg")
+	instance Person2 jt = new Person2("Jens Trætteberg")
+
+	-- compare(jt, ht) > 0 -->
+	state {
+		compare(ht, ht) == 0
+		compare(ht, jt) < 0
+		compare(jt, jt) == 0
+	}
+}
